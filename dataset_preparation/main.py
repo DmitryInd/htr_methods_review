@@ -1,10 +1,23 @@
 # -*- coding: utf-8 -*-
 import os
 import argparse
-import re
+import numpy as np
 import pandas as pd
+import re
 
 from utils import parser
+
+
+def train_validation_test_split(csv_path: str, train_part=.6, validation_part=.2):
+    csv_data = pd.read_csv(csv_path)
+    train, validate, test = np.split(csv_data.sample(frac=1, random_state=42),
+                                     [int(train_part * len(csv_data)),
+                                      int((train_part + validation_part) * len(csv_data))])
+
+    csv_path = os.path.splitext(csv_path)[0]
+    train.to_csv(csv_path + "_train.csv", index=False, encoding="utf-8")
+    validate.to_csv(csv_path + "_validate.csv", index=False, encoding="utf-8")
+    test.to_csv(csv_path + "_test.csv", index=False, encoding="utf-8")
 
 
 def get_relative_path_gen(images_dir_path: str, csv_path: str):
@@ -67,5 +80,8 @@ if __name__ == '__main__':
 
     csv_format(args.csv_path, args.image_path_column, args.text_column,
                args.images_dir)
+
+    if args.train_validation_test_split:
+        train_validation_test_split(args.csv_path)
 
     print("INFO: Success!")
