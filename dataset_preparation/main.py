@@ -8,6 +8,17 @@ import re
 from utils import parser
 
 
+def get_alphabet(csv_path: str, base_alphabet=None):
+    alphabet = set()
+    if base_alphabet is not None:
+        alphabet.update(base_alphabet)
+
+    csv_data = pd.read_csv(csv_path)
+    for text in csv_data['text'].to_list():
+        alphabet.update(text)
+    return sorted(list(alphabet))
+
+
 def train_validation_test_split(csv_path: str, train_part=.6, validation_part=.2):
     csv_data = pd.read_csv(csv_path)
     train, validate, test = np.split(csv_data.sample(frac=1, random_state=42),
@@ -83,5 +94,7 @@ if __name__ == '__main__':
 
     if args.train_validation_test_split:
         train_validation_test_split(args.csv_path)
+
+    print(''.join(get_alphabet(args.csv_path)))
 
     print("INFO: Success!")
