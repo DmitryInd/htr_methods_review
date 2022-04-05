@@ -1,12 +1,12 @@
 import torch
 import argparse
 
-from ocr.dataset import get_data_loader
-from ocr.utils import val_loop
-from ocr.transforms import get_val_transforms
-from ocr.tokenizer import Tokenizer
-from ocr.config import Config
-from ocr.models import CRNN
+from utils.dataset import get_data_loader
+from utils.loop_helper import val_loop
+from utils.transforms import get_val_transforms
+from utils.tokenizer import Tokenizer
+from utils.config import Config
+from models.builder import get_model
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -29,7 +29,7 @@ def main(args):
         drop_last=False
     )
 
-    model = CRNN(number_class_symbols=tokenizer.get_num_chars())
+    model = get_model(config.get("model"), number_class_symbols=tokenizer.get_num_chars())
     model.load_state_dict(torch.load(args.model_path))
     model.to(DEVICE)
 
@@ -39,7 +39,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_path', type=str,
-                        default='/workdir/scripts/ocr_config.json',
+                        default='ocr_config.json',
                         help='Path to config.json.')
     parser.add_argument('--model_path', type=str,
                         help='Path to model weights.')

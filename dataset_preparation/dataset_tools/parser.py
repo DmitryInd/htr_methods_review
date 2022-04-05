@@ -16,7 +16,7 @@ def add_arguments(parser: ArgumentParser):
                         required=True)
     parser.add_argument('--texts_dir', type=str,
                         help='Path to folder with recognized text')
-    parser.add_argument('--train_validation_test_split', type=bool,
-                        default=False,
+    parser.add_argument('--train_validation_test_split',
+                        action='store_true',
                         help='Flag of dataset splitting on train, validation and test part')
     return parser

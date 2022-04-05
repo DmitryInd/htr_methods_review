@@ -1,10 +1,10 @@
 import torch
 import numpy as np
 
-from ocr.transforms import InferenceTransform
-from ocr.tokenizer import Tokenizer
-from ocr.config import Config
-from ocr.models import CRNN
+from utils.transforms import InferenceTransform
+from utils.tokenizer import Tokenizer
+from utils.config import Config
+from models.builder import get_model
 
 
 def predict(images, model, tokenizer, device):
@@ -12,7 +12,7 @@ def predict(images, model, tokenizer, device):
 
     Args:
         images (torch.Tensor): Batch with tensor images.
-        model (ocr.src.models.CRNN): OCR model.
+        model (utils.src.models.CRNN): OCR model.
         tokenizer (ocr.tokenizer.Tokenizer): Tokenizer class.
         device (torch.device): Torch device.
     """
@@ -31,7 +31,7 @@ class OcrPredictor:
         self.tokenizer = Tokenizer(config.get('alphabet'))
         self.device = torch.device(device)
         # load model
-        self.model = CRNN(number_class_symbols=self.tokenizer.get_num_chars())
+        self.model = get_model(config.get("model"), number_class_symbols=self.tokenizer.get_num_chars())
         self.model.load_state_dict(torch.load(model_path))
         self.model.to(self.device)
 

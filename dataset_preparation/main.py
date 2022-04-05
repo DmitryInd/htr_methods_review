@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import re
 
-from utils import parser
+from dataset_tools import parser
 
 
 def get_alphabet(csv_path: str, base_alphabet=None):
@@ -27,7 +27,7 @@ def train_validation_test_split(csv_path: str, train_part=.6, validation_part=.2
 
     csv_path = os.path.splitext(csv_path)[0]
     train.to_csv(csv_path + "_train.csv", index=False, encoding="utf-8")
-    validate.to_csv(csv_path + "_validate.csv", index=False, encoding="utf-8")
+    validate.to_csv(csv_path + "_validation.csv", index=False, encoding="utf-8")
     test.to_csv(csv_path + "_test.csv", index=False, encoding="utf-8")
 
 

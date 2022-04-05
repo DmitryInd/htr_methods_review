@@ -20,7 +20,7 @@ Also you can install the necessary python packages via [requirements.txt](requir
 
 ## Configuring the model
 
-You can change the [ocr_config.json](scripts/ocr_config.json) (or make a copy of the file) and set the necessary training and evaluating parameters: alphabet, image size, saving path and etc.
+You can change the [ocr_config.json](launch_scripts/ocr_config.json) (or make a copy of the file) and set the necessary training and evaluating parameters: alphabet, image size, saving path and etc.
 
 You can set the "epoch_size" to null to train/test on the entire dataset.
 
@@ -49,7 +49,7 @@ Datasets must be pre-processed and have a single format: each dataset must conta
 To train the model:
 
 ```bash
-python scripts/train.py --config_path path/to/the/ocr_config.json
+python launch_scripts/train.py --config_path path/to/the/ocr_config.json
 ```
 
 ## Evaluating
@@ -57,7 +57,7 @@ python scripts/train.py --config_path path/to/the/ocr_config.json
 To test the model:
 
 ```bash
-python scripts/evaluate.py \
+python launch_scripts/evaluate.py \
 --config_path path/to/the/ocr_config.json \
 --model_path path/to/the/model-weights.ckpt
 ```

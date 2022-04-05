@@ -6,16 +6,16 @@ import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-from ocr.utils import (
+from utils.loop_helper import (
     val_loop, load_pretrain_model, FilesLimitControl, AverageMeter, sec2min
 )
 
-from ocr.utils import cer
-from ocr.dataset import get_data_loader
-from ocr.transforms import get_train_transforms, get_val_transforms
-from ocr.tokenizer import Tokenizer
-from ocr.config import Config
-from ocr.models import CRNN
+from utils.loop_helper import cer
+from utils.dataset import get_data_loader
+from utils.transforms import get_train_transforms, get_val_transforms
+from utils.tokenizer import Tokenizer
+from utils.config import Config
+from models.builder import (get_model, get_criterion)
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -52,12 +52,12 @@ def train_loop(data_loader, model, criterion, optimizer, epoch, scheduler, token
         images = images.to(DEVICE)
         batch_size = len(texts)
         output = model(images)
-        output_lenghts = torch.full(
+        output_lengths = torch.full(
             size=(output.size(1),),
             fill_value=output.size(0),
             dtype=torch.long
         )
-        loss = criterion(output, enc_pad_texts, output_lenghts, text_lens)
+        loss = criterion(output, enc_pad_texts, output_lengths, text_lens)
         loss_avg.update(loss.item(), batch_size)
         cer_avg.update(cer(texts, get_text_from_probs(output, tokenizer)), batch_size)
         loss.backward()
@@ -109,14 +109,14 @@ def main(args):
     os.makedirs(config.get('save_dir'), exist_ok=True)
     train_loader, val_loader = get_loaders(tokenizer, config)
 
-    model = CRNN(number_class_symbols=tokenizer.get_num_chars())
+    model = get_model(config.get("model"), number_class_symbols=tokenizer.get_num_chars())
     if config.get('pretrain_path'):
         states = load_pretrain_model(config.get('pretrain_path'), model)
         model.load_state_dict(states)
         print('Load pretrained model')
     model.to(DEVICE)
 
-    criterion = torch.nn.CTCLoss(blank=0, reduction='mean', zero_infinity=True)
+    criterion = get_criterion(config.get("criterion"))
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001,
                                   weight_decay=0.01)
     scheduler = torch.optim.lr_scheduler.OneCycleLR(
@@ -158,7 +158,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_path', type=str,
-                        default='/workdir/scripts/ocr_config.json',
+                        default='ocr_config.json',
                         help='Path to config.json.')
     args = parser.parse_args()
 

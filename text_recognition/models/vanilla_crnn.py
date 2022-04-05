@@ -3,7 +3,7 @@ import torchvision
 
 
 def get_resnet34_backbone(pretrained=True):
-    m = torchvision.models.resnet34(pretrained=True)
+    m = torchvision.models.resnet34(pretrained=pretrained)
     input_conv = nn.Conv2d(3, 64, 7, 1, 3)
     blocks = [input_conv, m.bn1, m.relu,
               m.maxpool, m.layer1, m.layer2, m.layer3]

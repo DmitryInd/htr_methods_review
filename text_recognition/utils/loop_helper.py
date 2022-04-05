@@ -4,8 +4,8 @@ import math
 import time
 from tqdm import tqdm
 
-from ocr.metrics import get_accuracy, wer, cer
-from ocr.predictor import predict
+from utils.metrics import get_accuracy, wer, cer
+from utils.predictor import predict
 
 
 def val_loop(data_loader, model, tokenizer, device):
@@ -22,7 +22,7 @@ def val_loop(data_loader, model, tokenizer, device):
         cer_avg.update(cer(texts, text_preds), batch_size)
 
     loop_time = sec2min(time.time() - start_time)
-    print(f'\nValidation, '
+    print(f'\nValidation\t'
           f'acc: {acc_avg.avg:.4f}, '
           f'wer: {wer_avg.avg:.4f}, '
           f'cer: {cer_avg.avg:.4f}, '

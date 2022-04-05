@@ -1,9 +1,11 @@
 {
     "russian_alphabet": " !\"'()*+,-./0123456789:;<=>?[\\]_|}АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя’№",
-    "old_russian_alphabet": " ()+/0123456789[]abdefghiklmnoprstu|×ǂабвгдежзийклмнопрстуфхцчшщъыьэюяѣ–⊕⊗",
+    "alphabet": " ()+/0123456789[]abdefghiklmnoprstu|×ǂабвгдежзийклмнопрстуфхцчшщъыьэюяѣ–⊕⊗",
     "english_alphabet": " !\"'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]abcdefghijklmnopqrstuvwxyz|}’№",
     "capital_english_alphabet": " !\"'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]_|}’№",
-    "save_dir": "../data/experiments/test",
+    "save_dir": "../../data/experiments/test",
+    "model": "CRNN",
+    "criterion": "CTCLoss",
     "num_epochs": 50,
     "pretrain_path": "",
     "image": {
@@ -13,7 +15,7 @@
     "train": {
         "datasets": [
             {
-                "csv_path": "../data/Peter's_notes/table_train.csv",
+                "csv_path": "../../data/Peter's_notes/notes_train.csv",
                 "prob": 1
             }
 
@@ -24,7 +26,7 @@
     "val": {
         "datasets": [
             {
-                "csv_path": "../data/Peter's_notes/table_validate.csv",
+                "csv_path": "../../data/Peter's_notes/notes_validation.csv",
                 "prob": 1
             }
 
@@ -35,7 +37,7 @@
     "test": {
         "datasets": [
             {
-                "csv_path": "../data/Peter's_notes/table_test.csv",
+                "csv_path": "../../data/Peter's_notes/notes_test.csv",
                 "prob": 1
             }
 
