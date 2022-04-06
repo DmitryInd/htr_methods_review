@@ -116,7 +116,7 @@ def main(args):
         print('Load pretrained model')
     model.to(DEVICE)
 
-    criterion = get_criterion(config.get("criterion"))
+    criterion = get_criterion(config.get("criterion")).to(DEVICE)
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001,
                                   weight_decay=0.01)
     scheduler = torch.optim.lr_scheduler.OneCycleLR(
