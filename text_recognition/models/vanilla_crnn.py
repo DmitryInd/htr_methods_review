@@ -40,6 +40,11 @@ class CRNN(nn.Module):
         )
 
     def forward(self, x):
+        """
+        Calculate model output
+        :param x: batch of images, size of input - [batch, channel, height, width]
+        :return: predictions, size of output - [batch, seq_len, num_classes (alphabet_size)]
+        """
         x = self.feature_extractor(x)
         b, c, h, w = x.size()
         x = x.view(b, c * h, w)
@@ -47,5 +52,5 @@ class CRNN(nn.Module):
         x = x.transpose(1, 2)
         x = self.bilstm(x)
         x = self.classifier(x)
-        x = nn.functional.log_softmax(x, dim=2).permute(1, 0, 2)
+        x = nn.functional.log_softmax(x, dim=2)
         return x

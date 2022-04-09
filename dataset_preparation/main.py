@@ -19,7 +19,7 @@ def get_alphabet(csv_path: str, base_alphabet=None):
     return sorted(list(alphabet))
 
 
-def train_validation_test_split(csv_path: str, train_part=.6, validation_part=.2):
+def train_validation_test_split(csv_path: str, train_part=.8, validation_part=.1):
     csv_data = pd.read_csv(csv_path)
     train, validate, test = np.split(csv_data.sample(frac=1, random_state=42),
                                      [int(train_part * len(csv_data)),

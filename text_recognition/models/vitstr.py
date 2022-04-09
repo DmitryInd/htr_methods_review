@@ -26,27 +26,30 @@ __all__ = [
 ]
 
 
-def create_vitstr(num_tokens, model=None, checkpoint_path=''):
+def create_vitstr(number_class_symbols, output_length, model=None, checkpoint_path='', **kwargs):
     vitstr = create_model(
         model,
         pretrained=True,
-        num_classes=num_tokens,
-        checkpoint_path=checkpoint_path)
+        num_classes=number_class_symbols,
+        checkpoint_path=checkpoint_path,
+        output_length=output_length,
+        **kwargs)
 
     # might need to run to get zero init head for transfer learning
-    vitstr.reset_classifier(num_classes=num_tokens)
+    vitstr.reset_classifier(num_classes=number_class_symbols)
 
     return vitstr
 
 
 class ViTSTR(VisionTransformer):
-    '''
+    """
     ViTSTR is basically a ViT that uses DeiT weights.
     Modified head to support a sequence of characters prediction for STR.
-    '''
+    """
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, output_length, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.output_length = output_length + 2  # +2 for [GO] and [s] at end of sentence.
 
     def reset_classifier(self, num_classes):
         self.num_classes = num_classes
@@ -67,11 +70,15 @@ class ViTSTR(VisionTransformer):
         x = self.norm(x)
         return x
 
-    def forward(self, x, seqlen: int = 25):
+    def forward(self, x):
+        """
+        Calculate model output
+        :param x: batch of images, size of input - [batch, channel, height, width]
+        :return: predictions, size of output - [batch, sequence length, num_classes (alphabet_size)]
+        """
         x = self.forward_features(x)
-        x = x[:, :seqlen]
-
-        # batch, seqlen, embsize
+        x = x[:, :self.output_length]
+        # batch, sequence length, embedding size
         b, s, e = x.size()
         x = x.reshape(b * s, e)
         x = self.head(x).view(b, s, self.num_classes)
@@ -149,7 +156,6 @@ def _conv_filter(state_dict, patch_size=16):
 
 @register_model
 def vitstr_tiny_patch16_224(pretrained=False, **kwargs):
-    kwargs['in_chans'] = 1
     model = ViTSTR(
         patch_size=16, embed_dim=192, depth=12, num_heads=3, mlp_ratio=4, qkv_bias=True, **kwargs)
 
@@ -166,7 +172,6 @@ def vitstr_tiny_patch16_224(pretrained=False, **kwargs):
 
 @register_model
 def vitstr_small_patch16_224(pretrained=False, **kwargs):
-    kwargs['in_chans'] = 1
     model = ViTSTR(
         patch_size=16, embed_dim=384, depth=12, num_heads=6, mlp_ratio=4, qkv_bias=True, **kwargs)
     model.default_cfg = _cfg(
@@ -181,7 +186,6 @@ def vitstr_small_patch16_224(pretrained=False, **kwargs):
 
 @register_model
 def vitstr_base_patch16_224(pretrained=False, **kwargs):
-    kwargs['in_chans'] = 1
     model = ViTSTR(
         patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True, **kwargs)
     model.default_cfg = _cfg(

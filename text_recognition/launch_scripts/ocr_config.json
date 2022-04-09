@@ -4,13 +4,16 @@
     "english_alphabet": " !\"'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]abcdefghijklmnopqrstuvwxyz|}’№",
     "capital_english_alphabet": " !\"'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]_|}’№",
     "save_dir": "../../data/experiments/test",
-    "model": "CRNN",
-    "criterion": "CTCLoss",
+    "model": "ViTSTR",
+    "criterion": "CrossEntropy",
+    "tokenizer": "Base",
+    "transformer_model": "vitstr_tiny_patch16_224",
+    "output_length": 70,
     "num_epochs": 50,
     "pretrain_path": "",
     "image": {
-        "width": 300,
-        "height": 32
+        "width": 224,
+        "height": 224
     },
     "train": {
         "datasets": [

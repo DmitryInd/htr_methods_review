@@ -4,7 +4,13 @@ import numpy as np
 from utils.transforms import InferenceTransform
 from utils.tokenizer import Tokenizer
 from utils.config import Config
+from utils.tokenizer import get_tokenizer
 from models.builder import get_model
+
+
+def get_text_from_probs(output, tokenizer):
+    pred = torch.argmax(output.detach().cpu(), -1).numpy()
+    return tokenizer.decode(pred)
 
 
 def predict(images, model, tokenizer, device):
@@ -20,15 +26,14 @@ def predict(images, model, tokenizer, device):
     images = images.to(device)
     with torch.no_grad():
         output = model(images)
-    pred = torch.argmax(output.detach().cpu(), -1).permute(1, 0).numpy()
-    text_preds = tokenizer.decode(pred)
+    text_preds = get_text_from_probs(output, tokenizer)
     return text_preds
 
 
 class OcrPredictor:
     def __init__(self, model_path, config_path, device='cuda'):
         config = Config(config_path)
-        self.tokenizer = Tokenizer(config.get('alphabet'))
+        self.tokenizer = get_tokenizer(config.get('tokenizer'), config)
         self.device = torch.device(device)
         # load model
         self.model = get_model(config.get("model"), number_class_symbols=self.tokenizer.get_num_chars())

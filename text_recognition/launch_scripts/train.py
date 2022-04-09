@@ -11,11 +11,13 @@ from utils.loop_helper import (
 )
 
 from utils.loop_helper import cer
+from utils.predictor import get_text_from_probs
 from utils.dataset import get_data_loader
 from utils.transforms import get_train_transforms, get_val_transforms
-from utils.tokenizer import Tokenizer
 from utils.config import Config
-from models.builder import (get_model, get_criterion)
+from utils.tokenizer import get_tokenizer
+from utils.criteria import get_criterion
+from models.builder import get_model
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -35,11 +37,6 @@ def print_plot(loss_history, train_cer_history, valid_cer_history):
     plt.show()
 
 
-def get_text_from_probs(output, tokenizer):
-    pred = torch.argmax(output.detach().cpu(), -1).permute(1, 0).numpy()
-    return tokenizer.decode(pred)
-
-
 def train_loop(data_loader, model, criterion, optimizer, epoch, scheduler, tokenizer):
     torch.cuda.empty_cache()
     loss_avg = AverageMeter()
@@ -50,14 +47,10 @@ def train_loop(data_loader, model, criterion, optimizer, epoch, scheduler, token
     for images, texts, enc_pad_texts, text_lens in tqdm_data_loader:
         model.zero_grad()
         images = images.to(DEVICE)
+        enc_pad_texts = enc_pad_texts.to(DEVICE)
         batch_size = len(texts)
         output = model(images)
-        output_lengths = torch.full(
-            size=(output.size(1),),
-            fill_value=output.size(0),
-            dtype=torch.long
-        )
-        loss = criterion(output, enc_pad_texts, output_lengths, text_lens)
+        loss = criterion(output, enc_pad_texts, text_lens)
         loss_avg.update(loss.item(), batch_size)
         cer_avg.update(cer(texts, get_text_from_probs(output, tokenizer)), batch_size)
         loss.backward()
@@ -105,11 +98,11 @@ def get_loaders(tokenizer, config):
 
 def main(args):
     config = Config(args.config_path)
-    tokenizer = Tokenizer(config.get('alphabet'))
+    tokenizer = get_tokenizer(config.get('tokenizer'), config)
     os.makedirs(config.get('save_dir'), exist_ok=True)
     train_loader, val_loader = get_loaders(tokenizer, config)
 
-    model = get_model(config.get("model"), number_class_symbols=tokenizer.get_num_chars())
+    model = get_model(config.get("model"), tokenizer.get_num_chars(), config)
     if config.get('pretrain_path'):
         states = load_pretrain_model(config.get('pretrain_path'), model)
         model.load_state_dict(states)

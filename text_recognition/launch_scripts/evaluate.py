@@ -4,8 +4,8 @@ import argparse
 from utils.dataset import get_data_loader
 from utils.loop_helper import val_loop
 from utils.transforms import get_val_transforms
-from utils.tokenizer import Tokenizer
 from utils.config import Config
+from utils.tokenizer import get_tokenizer
 from models.builder import get_model
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -13,7 +13,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def main(args):
     config = Config(args.config_path)
-    tokenizer = Tokenizer(config.get('alphabet'))
+    tokenizer = get_tokenizer(config.get('tokenizer'), config)
 
     val_transforms = get_val_transforms(
         height=config.get_image('height'),
@@ -29,7 +29,7 @@ def main(args):
         drop_last=False
     )
 
-    model = get_model(config.get("model"), number_class_symbols=tokenizer.get_num_chars())
+    model = get_model(config.get("model"), number_class_symbols=tokenizer.get_num_chars(), config=config)
     model.load_state_dict(torch.load(args.model_path))
     model.to(DEVICE)
 
