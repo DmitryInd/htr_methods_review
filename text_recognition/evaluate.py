@@ -11,8 +11,7 @@ from models.builder import get_model
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-def main(args):
-    config = Config(args.config_path)
+def main(config):
     tokenizer = get_tokenizer(config.get('tokenizer'), config)
 
     val_transforms = get_val_transforms(
@@ -45,4 +44,4 @@ if __name__ == '__main__':
                         help='Path to model weights.')
     args = parser.parse_args()
 
-    main(args)
+    main(config=Config(args.config_path))
