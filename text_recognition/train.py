@@ -63,8 +63,7 @@ def get_loaders(tokenizer, config):
     return train_loader, val_loader
 
 
-def main(args):
-    config = Config(args.config_path)
+def main(config):
     tokenizer = get_tokenizer(config.get('tokenizer'), config)
     os.makedirs(config.get('save_dir'), exist_ok=True)
     train_loader, val_loader = get_loaders(tokenizer, config)
@@ -123,4 +122,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print("INFO: DEVICE is " + str(DEVICE))
-    main(args)
+    main(config=Config(args.config_path))
