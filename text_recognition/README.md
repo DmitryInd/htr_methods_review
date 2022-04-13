@@ -20,7 +20,7 @@ Also you can install the necessary python packages via [requirements.txt](requir
 
 ## Configuring the model
 
-You can change the [ocr_config.json](launch_scripts/ocr_config.json) (or make a copy of the file) and set the necessary training and evaluating parameters: alphabet, image size, saving path and etc.
+You can change the [ocr_config.json](configs/ocr_config.json) (or make a copy of the file) and set the necessary training and evaluating parameters: alphabet, image size, saving path and etc.
 
 You can set the "epoch_size" to null to train/test on the entire dataset.
 

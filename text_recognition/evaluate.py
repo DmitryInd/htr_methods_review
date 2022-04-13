@@ -2,7 +2,7 @@ import torch
 import argparse
 
 from utils.dataset import get_data_loader
-from utils.loop_helper import val_loop
+from utils.assessment import val_loop
 from utils.transforms import get_val_transforms
 from utils.config import Config
 from utils.tokenizer import get_tokenizer
@@ -39,7 +39,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_path', type=str,
-                        default='ocr_config.json',
+                        default='configs/ocr_config.json',
                         help='Path to config.json.')
     parser.add_argument('--model_path', type=str,
                         help='Path to model weights.')

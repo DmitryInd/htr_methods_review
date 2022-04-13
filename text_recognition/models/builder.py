@@ -1,5 +1,6 @@
 from utils.config import Config
-from models import (vanilla_crnn, vitstr)
+
+from models import vanilla_crnn, vitstr
 
 
 def get_model(model_name: str, number_class_symbols: int, config: Config = None, **kwargs):

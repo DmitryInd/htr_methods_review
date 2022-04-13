@@ -1,17 +1,12 @@
-from tqdm import tqdm
 import os
-import time
 import torch
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 
-from utils.loop_helper import (
-    val_loop, load_pretrain_model, FilesLimitControl, AverageMeter, sec2min
-)
+from utils.assessment import val_loop, train_loop
+from utils.weights_controller import FilesLimitControl, load_pretrain_model
 
-from utils.loop_helper import cer
-from utils.predictor import get_text_from_probs
 from utils.dataset import get_data_loader
 from utils.transforms import get_train_transforms, get_val_transforms
 from utils.config import Config
@@ -35,34 +30,6 @@ def print_plot(loss_history, train_cer_history, valid_cer_history):
     ax[1].set_title('CER')
     plt.legend()
     plt.show()
-
-
-def train_loop(data_loader, model, criterion, optimizer, epoch, scheduler, tokenizer):
-    torch.cuda.empty_cache()
-    loss_avg = AverageMeter()
-    cer_avg = AverageMeter()
-    start_time = time.time()
-    model.train()
-    tqdm_data_loader = tqdm(data_loader, total=len(data_loader), leave=False)
-    for images, texts, enc_pad_texts, text_lens in tqdm_data_loader:
-        model.zero_grad()
-        images = images.to(DEVICE)
-        enc_pad_texts = enc_pad_texts.to(DEVICE)
-        batch_size = len(texts)
-        output = model(images)
-        loss = criterion(output, enc_pad_texts, text_lens)
-        loss_avg.update(loss.item(), batch_size)
-        cer_avg.update(cer(texts, get_text_from_probs(output, tokenizer)), batch_size)
-        loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 2)
-        optimizer.step()
-        scheduler.step()
-    loop_time = sec2min(time.time() - start_time)
-    for param_group in optimizer.param_groups:
-        lr = param_group['lr']
-    print(f'\nEpoch {epoch}, Loss: {loss_avg.avg:.5f}, cer: {cer_avg.avg:.4f}, '
-          f'LR: {lr:.7f}, loop_time: {loop_time}')
-    return loss_avg.avg, cer_avg.avg
 
 
 def get_loaders(tokenizer, config):
@@ -131,7 +98,7 @@ def main(args):
     valid_cer_history = np.array([cer_avg])
     for epoch in range(config.get('num_epochs')):
         loss_avg, cer_avg = train_loop(train_loader, model, criterion, optimizer,
-                                       epoch, scheduler, tokenizer)
+                                       epoch, scheduler, tokenizer, DEVICE)
         train_loss_history = np.append(train_loss_history, loss_avg)
         train_cer_history = np.append(train_cer_history, cer_avg)
 
@@ -151,7 +118,7 @@ def main(args):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--config_path', type=str,
-                        default='ocr_config.json',
+                        default='configs/ocr_config.json',
                         help='Path to config.json.')
     args = parser.parse_args()
 

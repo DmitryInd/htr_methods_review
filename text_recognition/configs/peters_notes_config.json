@@ -1,9 +1,6 @@
 {
-    "russian_alphabet": " !\"'()*+,-./0123456789:;<=>?[\\]_|}АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя’№",
     "alphabet": " ()+/0123456789[]abdefghiklmnoprstu|×ǂабвгдежзийклмнопрстуфхцчшщъыьэюяѣ–⊕⊗",
-    "english_alphabet": " !\"'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]abcdefghijklmnopqrstuvwxyz|}’№",
-    "capital_english_alphabet": " !\"'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]_|}’№",
-    "save_dir": "../../data/experiments/test",
+    "save_dir": "../data/experiments/test",
     "model": "ViTSTR",
     "criterion": "CrossEntropy",
     "tokenizer": "Base",
@@ -18,7 +15,7 @@
     "train": {
         "datasets": [
             {
-                "csv_path": "../../data/Peter's_notes/notes_train.csv",
+                "csv_path": "../data/Peter's_notes/notes_train.csv",
                 "prob": 1
             }
 
@@ -29,7 +26,7 @@
     "val": {
         "datasets": [
             {
-                "csv_path": "../../data/Peter's_notes/notes_validation.csv",
+                "csv_path": "../data/Peter's_notes/notes_validation.csv",
                 "prob": 1
             }
 
@@ -40,7 +37,7 @@
     "test": {
         "datasets": [
             {
-                "csv_path": "../../data/Peter's_notes/notes_test.csv",
+                "csv_path": "../data/Peter's_notes/notes_test.csv",
                 "prob": 1
             }
 

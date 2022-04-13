@@ -1,11 +1,38 @@
 import torch
-import os
 import math
 import time
 from tqdm import tqdm
 
 from utils.metrics import get_accuracy, wer, cer
-from utils.predictor import predict
+from utils.predictor import predict, get_text_from_probs
+
+
+def train_loop(data_loader, model, criterion, optimizer, epoch, scheduler, tokenizer, device):
+    torch.cuda.empty_cache()
+    loss_avg = AverageMeter()
+    cer_avg = AverageMeter()
+    start_time = time.time()
+    model.train()
+    tqdm_data_loader = tqdm(data_loader, total=len(data_loader), leave=False)
+    for images, texts, enc_pad_texts, text_lens in tqdm_data_loader:
+        model.zero_grad()
+        images = images.to(device)
+        enc_pad_texts = enc_pad_texts.to(device)
+        batch_size = len(texts)
+        output = model(images)
+        loss = criterion(output, enc_pad_texts, text_lens)
+        loss_avg.update(loss.item(), batch_size)
+        cer_avg.update(cer(texts, get_text_from_probs(output, tokenizer)), batch_size)
+        loss.backward()
+        torch.nn.utils.clip_grad_norm_(model.parameters(), 2)
+        optimizer.step()
+        scheduler.step()
+    loop_time = sec2min(time.time() - start_time)
+    for param_group in optimizer.param_groups:
+        lr = param_group['lr']
+    print(f'\nEpoch {epoch}, Loss: {loss_avg.avg:.5f}, cer: {cer_avg.avg:.4f}, '
+          f'LR: {lr:.7f}, loop_time: {loop_time}')
+    return loss_avg.avg, cer_avg.avg
 
 
 def val_loop(data_loader, model, tokenizer, device):
@@ -50,38 +77,3 @@ class AverageMeter:
         self.sum += val * n
         self.count += n
         self.avg = self.sum / self.count
-
-
-class FilesLimitControl:
-    """Delete files from the disk if there are more files than the set limit.
-    Args:
-        max_weights_to_save (int, optional): The number of files that will be
-            stored on the disk at the same time. Default is 3.
-    """
-    def __init__(self, max_weights_to_save=2):
-        self.saved_weights_paths = []
-        self.max_weights_to_save = max_weights_to_save
-
-    def __call__(self, save_path):
-        self.saved_weights_paths.append(save_path)
-        if len(self.saved_weights_paths) > self.max_weights_to_save:
-            old_weights_path = self.saved_weights_paths.pop(0)
-            if os.path.exists(old_weights_path):
-                os.remove(old_weights_path)
-                print(f"Weigths removed '{old_weights_path}'")
-
-
-def load_pretrain_model(weights_path, model):
-    """Load the entire pretrain model or as many layers as possible.
-    """
-    old_dict = torch.load(weights_path)
-    new_dict = model.state_dict()
-    for key, weights in new_dict.items():
-        if key in old_dict:
-            if new_dict[key].shape == old_dict[key].shape:
-                new_dict[key] = old_dict[key]
-            else:
-                print('Weights {} were not loaded'.format(key))
-        else:
-            print('Weights {} were not loaded'.format(key))
-    return new_dict
