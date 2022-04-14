@@ -6,9 +6,9 @@
     "model": "ViTSTR",
     "criterion": "CrossEntropy",
     "tokenizer": "Base",
-    "transformer_model": "vitstr_tiny_patch16_224",
+    "transformer_model": "vitstr_small_patch16_224",
     "output_length": 70,
-    "num_epochs": 50,
+    "num_epochs": 25,
     "pretrain_path": "",
     "image": {
         "width": 224,
