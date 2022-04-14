@@ -1,6 +1,10 @@
-# OCR CRNN and CTC loss model
+### OCR CRNN and CTC loss model
 Link to the original repository of SberAI:
 https://github.com/sberbank-ai/OCR-model
+
+### ViTSTR model and CrossEntropy loss
+Link to the original repository of transformer for scene text recognition:  
+https://github.com/roatienza/deep-text-recognition-benchmark  
 
 ## Quick setup and start
 
