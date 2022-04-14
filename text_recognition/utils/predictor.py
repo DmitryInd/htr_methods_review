@@ -36,7 +36,7 @@ class OcrPredictor:
         self.tokenizer = get_tokenizer(config.get('tokenizer'), config)
         self.device = torch.device(device)
         # load model
-        self.model = get_model(config.get("model"), number_class_symbols=self.tokenizer.get_num_chars())
+        self.model = get_model(config.get("model"), number_class_symbols=self.tokenizer.get_num_chars(), config=config)
         self.model.load_state_dict(torch.load(model_path))
         self.model.to(self.device)
 
