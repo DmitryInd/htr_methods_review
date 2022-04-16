@@ -1,10 +1,19 @@
+import codecs
+
 from argparse import ArgumentParser
+
+
+def unescaped_str(arg_str):
+    return codecs.decode(str(arg_str), encoding='unicode_escape')
 
 
 def add_arguments(parser: ArgumentParser):
     parser.add_argument('--csv_path', type=str,
                         help='Path to csv file with recognized text',
                         required=True)
+    parser.add_argument('--delimiter', type=unescaped_str,
+                        help='Separator of csv file',
+                        default=None)
     parser.add_argument('--image_path_column', type=int,
                         default=0,
                         help='Number of column with paths to images')
