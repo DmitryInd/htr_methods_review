@@ -1,0 +1,46 @@
+{
+    "alphabet": " !\"'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]_|}’№",
+    "save_dir": "../data/experiments/handwritten_names",
+    "model": "CRNN",
+    "criterion": "CTCLoss",
+    "tokenizer": "CTC",
+    "num_epochs": 25,
+    "pretrain_path": "",
+    "image": {
+        "width": 224,
+        "height": 224
+    },
+    "train": {
+        "datasets": [
+            {
+                "csv_path": "../data/handwritten_names/written_name_train_v2.csv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": 33000,
+        "batch_size": 64
+    },
+    "val": {
+        "datasets": [
+            {
+                "csv_path": "../data/handwritten_names/written_name_validation_v2.csv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": 4100,
+        "batch_size": 64
+    },
+    "test": {
+        "datasets": [
+            {
+                "csv_path": "../data/handwritten_names/written_name_test_v2.csv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": 4100,
+        "batch_size": 64
+    }
+}
