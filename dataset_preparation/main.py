@@ -41,8 +41,8 @@ def get_relative_path_gen(images_dir_path: str, csv_path: str):
     return get_relative_image_path
 
 
-def csv_format(csv_path: str, image_path_column: int, text_column: int, images_dir: str):
-    csv_data = pd.read_csv(csv_path)
+def csv_format(csv_path: str, delimiter: str, image_path_column: int, text_column: int, images_dir: str):
+    csv_data = pd.read_csv(csv_path) if delimiter is None else pd.read_csv(csv_path, sep=delimiter)
     # Renaming two columns with path to images and recognized text
     columns = csv_data.columns.values
     csv_data = csv_data.rename(columns={
@@ -89,8 +89,7 @@ if __name__ == '__main__':
     if args.texts_dir is not None:
         csv_generation(args.images_dir, args.texts_dir, args.csv_path)
 
-    csv_format(args.csv_path, args.image_path_column, args.text_column,
-               args.images_dir)
+    csv_format(args.csv_path, args.delimiter, args.image_path_column, args.text_column, args.images_dir)
 
     if args.train_validation_test_split:
         train_validation_test_split(args.csv_path)
