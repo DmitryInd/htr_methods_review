@@ -29,6 +29,7 @@ def print_plot(loss_history, train_cer_history, valid_cer_history):
     ax[1].set_xlabel('Epoch')
     ax[1].set_title('CER')
     plt.legend()
+    plt.grid()
     plt.show()
 
 
