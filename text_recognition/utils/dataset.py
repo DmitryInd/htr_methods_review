@@ -1,4 +1,5 @@
 import torch
+import os
 from torch.utils.data import Dataset, Sampler
 from torch.nn.utils.rnn import pad_sequence
 
@@ -113,7 +114,7 @@ def get_data_loader(
         dataset=dataset,
         collate_fn=collate_fn,
         batch_sampler=batcher,
-        num_workers=4,
+        num_workers=os.cpu_count() - 2,
     )
     return data_loader
 
