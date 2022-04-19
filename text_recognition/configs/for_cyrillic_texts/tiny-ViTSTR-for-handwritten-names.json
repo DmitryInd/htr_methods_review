@@ -1,0 +1,48 @@
+{
+    "alphabet": " !\"%(),-./0123456789:;?[]abgnpvx«»АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯабвгдежзийклмнопрстуфхцчшщъыьэюяё",
+    "save_dir": "../data/experiments/cyrillic_texts",
+    "model": "ViTSTR",
+    "criterion": "CrossEntropy",
+    "tokenizer": "Base",
+    "transformer_model": "vitstr_tiny_patch16_224",
+    "output_length": 70,
+    "num_epochs": 25,
+    "pretrain_path": "",
+    "image": {
+        "width": 224,
+        "height": 224
+    },
+    "train": {
+        "datasets": [
+            {
+                "csv_path": "../data/cyrillic_texts/train.tsv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": null,
+        "batch_size": 64
+    },
+    "val": {
+        "datasets": [
+            {
+                "csv_path": "../data/cyrillic_texts/test.tsv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": null,
+        "batch_size": 64
+    },
+    "test": {
+        "datasets": [
+            {
+                "csv_path": "../data/cyrillic_texts/test.tsv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": null,
+        "batch_size": 64
+    }
+}
