@@ -13,7 +13,7 @@
     "train": {
         "datasets": [
             {
-                "csv_path": "../data/cyrillic_texts/train.tsv",
+                "csv_path": "../data/cyrillic_texts/train.csv",
                 "prob": 1
             }
 
@@ -24,7 +24,7 @@
     "val": {
         "datasets": [
             {
-                "csv_path": "../data/cyrillic_texts/test.tsv",
+                "csv_path": "../data/cyrillic_texts/test.csv",
                 "prob": 1
             }
 
@@ -35,7 +35,7 @@
     "test": {
         "datasets": [
             {
-                "csv_path": "../data/cyrillic_texts/test.tsv",
+                "csv_path": "../data/cyrillic_texts/test.csv",
                 "prob": 1
             }
 

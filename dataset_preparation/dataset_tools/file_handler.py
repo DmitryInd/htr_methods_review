@@ -8,6 +8,10 @@ def get_file_type(path_to_file: str):
     return os.path.splitext(path_to_file)[1][1:]
 
 
+def get_pure_file_name(path_to_file: str):
+    return os.path.splitext(path_to_file)[0]
+
+
 def get_file_reader(file_type: str):
     if file_type == "csv":
         return CsvFileReader()

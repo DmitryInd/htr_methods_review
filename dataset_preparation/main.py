@@ -9,6 +9,15 @@ import re
 from dataset_tools import parser, file_handler
 
 
+def get_max_sequence_len(csv_path: str) -> int:
+    max_len = 0
+    csv_data = pd.read_csv(csv_path)
+    for text in csv_data['text'].to_list():
+        max_len = max(max_len, len(text))
+
+    return max_len
+
+
 def get_alphabet(csv_path: str, base_alphabet=None):
     alphabet = set()
     if base_alphabet is not None:
@@ -26,7 +35,7 @@ def train_validation_test_split(csv_path: str, train_part=.8, validation_part=.1
                                      [int(train_part * len(csv_data)),
                                       int((train_part + validation_part) * len(csv_data))])
 
-    csv_path = os.path.splitext(csv_path)[0]
+    csv_path = file_handler.get_pure_file_name(csv_path)
     train.to_csv(csv_path + "_train.csv", index=False, encoding="utf-8")
     validate.to_csv(csv_path + "_validation.csv", index=False, encoding="utf-8")
     test.to_csv(csv_path + "_test.csv", index=False, encoding="utf-8")
@@ -56,8 +65,10 @@ def csv_format(path_to_file: str, file_extension: str, image_path_column: int, t
     # Check path to images
     get_relative_image_path = get_relative_path_gen(images_dir, path_to_file)
     csv_data['filename'] = csv_data['filename'].apply(get_relative_image_path)
-    # Saving fixed dataset
+    # Saving fixed dataset in csv format
+    path_to_file = file_handler.get_pure_file_name(path_to_file) + ".csv"
     csv_data.to_csv(path_to_file, index=False, encoding="utf-8")
+    return path_to_file
 
 
 def csv_generation(images_dir: str, text_dir: str, csv_path: str):
@@ -92,11 +103,14 @@ if __name__ == '__main__':
         csv_generation(args.images_dir, args.texts_dir, args.path_to_table)
 
     file_type = args.file_type if args.file_type is not None else file_handler.get_file_type(args.path_to_table)
-    csv_format(args.path_to_table, file_type, args.image_path_column, args.text_column, args.images_dir)
+    args.path_to_table = csv_format(args.path_to_table, file_type,
+                                    args.image_path_column, args.text_column,
+                                    args.images_dir)
 
     if args.train_validation_test_split:
         train_validation_test_split(args.path_to_table)
 
-    print(''.join(get_alphabet(args.path_to_table)))
+    print("Symbols in dataset:\n" + ''.join(get_alphabet(args.path_to_table)))
+    print("Max len of sequence: " + str(get_max_sequence_len(args.path_to_table)))
 
     print("INFO: Success!")
