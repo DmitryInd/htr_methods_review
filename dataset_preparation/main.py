@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 import os
+import csv
 import argparse
 import numpy as np
 import pandas as pd
 import re
 
-from dataset_tools import parser
+from dataset_tools import parser, file_handler
 
 
 def get_alphabet(csv_path: str, base_alphabet=None):
@@ -41,8 +42,9 @@ def get_relative_path_gen(images_dir_path: str, csv_path: str):
     return get_relative_image_path
 
 
-def csv_format(csv_path: str, delimiter: str, image_path_column: int, text_column: int, images_dir: str):
-    csv_data = pd.read_csv(csv_path) if delimiter is None else pd.read_csv(csv_path, sep=delimiter)
+def csv_format(path_to_file: str, file_extension: str, image_path_column: int, text_column: int, images_dir: str):
+    file_reader = file_handler.get_file_reader(file_extension)
+    csv_data = file_reader(path_to_file)
     # Renaming two columns with path to images and recognized text
     columns = csv_data.columns.values
     csv_data = csv_data.rename(columns={
@@ -52,10 +54,10 @@ def csv_format(csv_path: str, delimiter: str, image_path_column: int, text_colum
     # Deleting empty rows
     csv_data = csv_data.dropna()
     # Check path to images
-    get_relative_image_path = get_relative_path_gen(images_dir, csv_path)
+    get_relative_image_path = get_relative_path_gen(images_dir, path_to_file)
     csv_data['filename'] = csv_data['filename'].apply(get_relative_image_path)
     # Saving fixed dataset
-    csv_data.to_csv(csv_path, index=False, encoding="utf-8")
+    csv_data.to_csv(path_to_file, index=False, encoding="utf-8")
 
 
 def csv_generation(images_dir: str, text_dir: str, csv_path: str):
@@ -79,7 +81,7 @@ def csv_generation(images_dir: str, text_dir: str, csv_path: str):
 
     # Saving information in csv table
     csv_data = pd.DataFrame({"filename": filename, "text": text})
-    csv_data.to_csv(csv_path, index=False, encoding="utf-8")
+    csv_data.to_csv(csv_path, index=False, encoding="utf-8", quoting=csv.QUOTE_NONE)
 
 
 if __name__ == '__main__':
@@ -89,11 +91,12 @@ if __name__ == '__main__':
     if args.texts_dir is not None:
         csv_generation(args.images_dir, args.texts_dir, args.csv_path)
 
-    csv_format(args.csv_path, args.delimiter, args.image_path_column, args.text_column, args.images_dir)
+    file_type = args.file_type if args.file_type is not None else file_handler.get_file_type(args.path_to_table)
+    csv_format(args.path_to_table, file_type, args.image_path_column, args.text_column, args.images_dir)
 
     if args.train_validation_test_split:
-        train_validation_test_split(args.csv_path)
+        train_validation_test_split(args.path_to_table)
 
-    print(''.join(get_alphabet(args.csv_path)))
+    print(''.join(get_alphabet(args.path_to_table)))
 
     print("INFO: Success!")

@@ -92,12 +92,13 @@ class BaseTokenizer(Tokenizer):
         self.character = self.list_token + list(alphabet)
 
         self.dict = {word: i for i, word in enumerate(self.character)}
-        self.batch_max_length = output_length + 2  # +2 for [GO] and [s] at end of sentence.
+        self.batch_max_length = output_length
 
     def encode(self, text):
-        # length = [len(s) + 2 for s in text]  # +2 for [GO] and [s] at end of sentence.
-        batch_text = [[self.dict[GO]] * self.batch_max_length for _ in text]
+        # length = [len(s) + 2 for s in text]: + 2 for [GO] and [s] at end of sentence
+        batch_text = [[self.dict[GO]] * (self.batch_max_length + 2) for _ in text]
         for i, t in enumerate(text):
+            assert len(t) <= self.batch_max_length, f"This sequence is too long:\n{t}"
             txt = [GO] + list(t) + [SPACE]
             txt = [self.dict[char] if char in self.character else self.dict[OOV_TOKEN] for char in txt]
             batch_text[i][:len(txt)] = txt  # batch_text[:, 0] = [GO] token
