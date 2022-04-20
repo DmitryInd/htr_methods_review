@@ -104,7 +104,7 @@ def main(config):
 
         acc_avg, cer_avg = val_loop(val_loader, model, tokenizer, DEVICE)
         valid_cer_history = np.append(valid_cer_history, cer_avg)
-        if acc_avg > best_acc:
+        if acc_avg >= best_acc:
             best_acc = acc_avg
             model_save_path = os.path.join(
                 config.get('save_dir'), f'model-{epoch}-{acc_avg:.4f}.ckpt')
