@@ -89,7 +89,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if args.texts_dir is not None:
-        csv_generation(args.images_dir, args.texts_dir, args.csv_path)
+        csv_generation(args.images_dir, args.texts_dir, args.path_to_table)
 
     file_type = args.file_type if args.file_type is not None else file_handler.get_file_type(args.path_to_table)
     csv_format(args.path_to_table, file_type, args.image_path_column, args.text_column, args.images_dir)

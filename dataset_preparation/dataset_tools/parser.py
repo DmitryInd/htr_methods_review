@@ -6,7 +6,7 @@ def add_arguments(parser: ArgumentParser):
                         help='Path to table file with recognized text',
                         required=True)
     parser.add_argument('--file_type', type=str,
-                        help='Extension of input table file (output data is always in csv format)',
+                        help='To specify type (extension) of input table file (output data is always in csv format)',
                         default=None)
     parser.add_argument('--image_path_column', type=int,
                         default=0,

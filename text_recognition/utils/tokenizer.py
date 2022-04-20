@@ -1,5 +1,3 @@
-import torch
-
 from abc import ABC, abstractmethod
 
 from utils.config import Config
