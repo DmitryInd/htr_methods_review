@@ -5,7 +5,7 @@
     "criterion": "CrossEntropy",
     "tokenizer": "Base",
     "transformer_model": "vitstr_tiny_patch16_224",
-    "output_length": 70,
+    "output_length": 71,
     "num_epochs": 50,
     "pretrain_path": "",
     "image": {
