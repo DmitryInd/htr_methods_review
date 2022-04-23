@@ -1,5 +1,6 @@
 import pickle as pkl
 import sys
+import os
 
 import torch.nn.functional as F
 import torch.utils.data
@@ -17,7 +18,7 @@ class CustomDataset(data_utils.Dataset):
         self.config = config
         self.is_training = is_training
 
-        with open(pickle_path, 'rb', encoding="utf-8") as f:
+        with open(pickle_path, 'rb') as f:
             data = pkl.load(f)
 
         self.word_data = data['word_data']
@@ -56,7 +57,7 @@ class DataLoader:
         self.dataset = CustomDataset(self.config, self.pickle_path)
         return torch.utils.data.DataLoader(
             self.dataset, batch_size=self.config.batch_size, shuffle=True,
-            num_workers=6, pin_memory=True, collate_fn=self.batch_collate)
+            num_workers=os.cpu_count() - 1, pin_memory=True, collate_fn=self.batch_collate)
 
     def batch_collate(self, batch):
         items = {}

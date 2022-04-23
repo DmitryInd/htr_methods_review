@@ -82,7 +82,7 @@ def read_data(config, args):
     print(f'Number of unique characters = {num_chars}')
 
     # Save the data
-    with open(args.output_pkl_name, 'wb', encoding="utf-8") as f:
+    with open(args.output_pkl_name, 'wb') as f:
         pkl.dump({'word_data': word_data,
                   'char_map': char_map,
                   'num_chars': num_chars}, f, protocol=pkl.HIGHEST_PROTOCOL)
