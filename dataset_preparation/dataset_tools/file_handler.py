@@ -29,9 +29,9 @@ class FileReader(ABC):
 
 class CsvFileReader(FileReader):
     def __call__(self, path_to_file) -> pd.DataFrame:
-        return pd.read_csv(path_to_file)
+        return pd.read_csv(path_to_file, encoding="utf-8")
 
 
 class TsvFileReader(FileReader):
     def __call__(self, path_to_file: str) -> pd.DataFrame:
-        return pd.read_csv(path_to_file, sep="\t", quoting=csv.QUOTE_NONE)
+        return pd.read_csv(path_to_file, sep="\t", quoting=csv.QUOTE_NONE, encoding="utf-8")

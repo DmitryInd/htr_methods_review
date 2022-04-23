@@ -17,7 +17,7 @@ class CustomDataset(data_utils.Dataset):
         self.config = config
         self.is_training = is_training
 
-        with open(pickle_path, 'rb') as f:
+        with open(pickle_path, 'rb', encoding="utf-8") as f:
             data = pkl.load(f)
 
         self.word_data = data['word_data']

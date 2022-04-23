@@ -47,7 +47,7 @@ def read_data(config, args):
     data = []
     for csv_path in args.data_csv_path:
         print(f"processed: {csv_path}")
-        csv_data = pd.read_csv(csv_path)
+        csv_data = pd.read_csv(csv_path, encoding="utf-8")
         csv_data['filename'] = csv_data['filename'].apply(
             get_full_img_path, path_to_csv=csv_path)
         data.append(csv_data)
@@ -82,7 +82,7 @@ def read_data(config, args):
     print(f'Number of unique characters = {num_chars}')
 
     # Save the data
-    with open(args.output_pkl_name, 'wb') as f:
+    with open(args.output_pkl_name, 'wb', encoding="utf-8") as f:
         pkl.dump({'word_data': word_data,
                   'char_map': char_map,
                   'num_chars': num_chars}, f, protocol=pkl.HIGHEST_PROTOCOL)

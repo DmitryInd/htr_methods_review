@@ -83,7 +83,7 @@ def read_and_concat_datasets(csv_paths):
     """
     data = []
     for csv_path in csv_paths:
-        csv_data = pd.read_csv(csv_path)
+        csv_data = pd.read_csv(csv_path, encoding="utf-8")
         csv_data['dataset_name'] = csv_path
         csv_data['filename'] = csv_data['filename'].apply(
             get_full_img_path, csv_path=csv_path)

@@ -8,8 +8,8 @@ class Config:
     char_w = 16
     channels = 3
 
-    batch_size = 32
-    num_epochs = 30
+    batch_size = 16
+    num_epochs = 60
     epochs_lr_decay = 100  # learning rate decay will be applied for last these many steps (should be <= num_epochs)
 
     train_gen_steps = 3  # generator weights to be updated after every specified number of steps

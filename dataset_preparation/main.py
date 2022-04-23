@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import csv
 import argparse
 import numpy as np
 import pandas as pd
@@ -11,7 +10,7 @@ from dataset_tools import parser, file_handler
 
 def get_max_sequence_len(csv_path: str) -> int:
     max_len = 0
-    csv_data = pd.read_csv(csv_path)
+    csv_data = pd.read_csv(csv_path, encoding="utf-8")
     for text in csv_data['text'].to_list():
         max_len = max(max_len, len(text))
 
@@ -23,14 +22,14 @@ def get_alphabet(csv_path: str, base_alphabet=None):
     if base_alphabet is not None:
         alphabet.update(base_alphabet)
 
-    csv_data = pd.read_csv(csv_path)
+    csv_data = pd.read_csv(csv_path, encoding="utf-8")
     for text in csv_data['text'].to_list():
         alphabet.update(text)
     return sorted(list(alphabet))
 
 
 def train_validation_test_split(csv_path: str, train_part=.8, validation_part=.1):
-    csv_data = pd.read_csv(csv_path)
+    csv_data = pd.read_csv(csv_path, encoding="utf-8")
     train, validate, test = np.split(csv_data.sample(frac=1, random_state=42),
                                      [int(train_part * len(csv_data)),
                                       int((train_part + validation_part) * len(csv_data))])
@@ -92,7 +91,7 @@ def csv_generation(images_dir: str, text_dir: str, csv_path: str):
 
     # Saving information in csv table
     csv_data = pd.DataFrame({"filename": filename, "text": text})
-    csv_data.to_csv(csv_path, index=False, encoding="utf-8", quoting=csv.QUOTE_NONE)
+    csv_data.to_csv(csv_path, index=False, encoding="utf-8")
 
 
 if __name__ == '__main__':

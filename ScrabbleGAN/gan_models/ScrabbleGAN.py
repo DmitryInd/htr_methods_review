@@ -109,7 +109,7 @@ class ScrabbleGAN(nn.Module):
         """Get word list from lexicon to be used to generate fake images."""
         fake_words = []
         for lexicon_path in lexicon_paths:
-            with open(lexicon_path, 'r') as f:
+            with open(lexicon_path, 'r', encoding="utf-8") as f:
                 fake_words.extend(f.read().splitlines())
 
         fake_words_clean = []

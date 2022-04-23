@@ -27,7 +27,7 @@ class ImgGenerator:
         self.return_rgb = return_rgb
         self.shrink_ratio = shrink_ratio
         self.config = config
-        with open(char_map_path, 'rb') as f:
+        with open(char_map_path, 'rb', encoding="utf-8") as f:
             char_map = pkl.load(f)
         self.char_map = char_map['char_map']
         print(f'Model: {config.architecture}')
