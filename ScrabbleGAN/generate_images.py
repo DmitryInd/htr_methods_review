@@ -1,15 +1,16 @@
-from importlib import import_module
+import argparse
+import os
 import pickle as pkl
+from importlib import import_module
+
 import cv2
 import numpy as np
 import pandas as pd
-import os
+import torch
 from tqdm import tqdm
 
-from gan_utils.data_utils import *
-from gan_utils.training_utils import ModelCheckpoint
 from config import Config
-import argparse
+from gan_utils.training_utils import ModelCheckpoint
 
 
 class ImgGenerator:

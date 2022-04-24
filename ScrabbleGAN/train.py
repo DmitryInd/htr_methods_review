@@ -1,20 +1,22 @@
 import argparse
+import logging
+import os
+import shutil
+import sys
+from importlib import import_module
 from itertools import cycle
+
+import cv2
+import numpy as np
+import torch.nn.functional as F
 from torch.utils.tensorboard import SummaryWriter
 from tqdm import tqdm
-from importlib import import_module
-import shutil
-import cv2
-import os
-import numpy as np
-import logging
 
-import torch.nn.functional as F
+from config import Config
 from data_loader.data_generator import DataLoader
 from gan_utils.data_utils import *
 from gan_utils.training_utils import ModelCheckpoint
 from losses_and_metrics import loss_functions
-from config import Config
 
 seed = 0
 torch.manual_seed(seed)
@@ -26,7 +28,8 @@ level = logging.INFO
 format_log = '%(message)s'
 
 os.makedirs('output', exist_ok=True)
-handlers = [logging.FileHandler('output/output.log'), logging.StreamHandler()]
+handlers = [logging.FileHandler('output/output.log', mode='w', encoding='utf-8'),
+            logging.StreamHandler(stream=sys.stdout)]
 logging.basicConfig(level=level, format=format_log, handlers=handlers)
 
 
