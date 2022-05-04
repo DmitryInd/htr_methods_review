@@ -53,11 +53,15 @@ class DataLoader:
         self.config = config
         self.pickle_path = pickle_path
 
-    def create_train_loader(self):
+    def create_train_loader(self, rank, workd_size, worker_count):
         self.dataset = CustomDataset(self.config, self.pickle_path)
+        if workd_size == 1:
+            sampler = torch.utils.data.RandomSampler(self.dataset)
+        else:
+            sampler = torch.utils.data.DistributedSampler(self.dataset, num_replicas=workd_size, rank=rank)
         return torch.utils.data.DataLoader(
-            self.dataset, batch_size=self.config.batch_size, shuffle=True,
-            num_workers=os.cpu_count() - 1, pin_memory=True, collate_fn=self.batch_collate)
+            self.dataset, batch_size=self.config.batch_size, sampler=sampler,
+            num_workers=worker_count, pin_memory=True, collate_fn=self.batch_collate, persistent_workers=True)
 
     def batch_collate(self, batch):
         items = {}

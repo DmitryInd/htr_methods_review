@@ -1,3 +1,5 @@
+import os
+
 import torch
 
 
@@ -8,23 +10,29 @@ class Config:
     char_w = 16
     channels = 3
 
-    batch_size = 16
-    num_epochs = 60
+    batch_scale = 2
+    batch_size = 8 * batch_scale
+    num_epochs = 1000
     epochs_lr_decay = 100  # learning rate decay will be applied for last these many steps (should be <= num_epochs)
 
     train_gen_steps = 3  # generator weights to be updated after every specified number of steps
-    grad_alpha = 1
+
+    grad_alpha = 2.
+
     grad_balance = True
+    min_grad_scale = 1e-6
+    max_grad_scale = 1.
 
     architecture = 'ScrabbleGAN'
 
     # Generator and Discriminator networks
     bn_linear = 'SN'
+    g_ch = 32
     g_shared = False
 
-    g_lr = 2e-4
-    d_lr = 2e-4
-    r_lr = 2e-4
+    g_lr = 5e-5 * batch_scale
+    d_lr = 5e-5 * batch_scale
+    r_lr = 5e-5 * batch_scale
     g_betas = [0., 0.999]
     d_betas = [0., 0.999]
     r_betas = [0., 0.999]
@@ -35,4 +43,8 @@ class Config:
     # Noise vector
     z_dim = 128
 
+    max_grad_norm = 10.
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    worker_count = os.cpu_count() - 1

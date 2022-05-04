@@ -97,11 +97,10 @@ class ScrabbleGAN(nn.Module):
         self.num_chars = len(char_map)
         self.word_map = WordMap(char_map)
 
-        self.batch_size = cfg.batch_size
         self.config = cfg
 
         self.R = Recognizer(cfg, self.num_chars)
-        self.G = BGAN.Generator(resolution=cfg.img_h, G_shared=cfg.g_shared,
+        self.G = BGAN.Generator(resolution=cfg.img_h, G_ch=cfg.g_ch, G_shared=cfg.g_shared,
                                 bn_linear=cfg.bn_linear, n_classes=self.num_chars, hier=True, channels=cfg.channels)
         self.D = BGAN.Discriminator(resolution=cfg.img_h, bn_linear=cfg.bn_linear, n_classes=self.num_chars, channels=cfg.channels)
 

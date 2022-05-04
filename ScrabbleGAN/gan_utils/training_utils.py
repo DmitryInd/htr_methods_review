@@ -1,3 +1,6 @@
+import re
+from collections import OrderedDict
+
 import torch
 import os
 import numpy as np
@@ -34,6 +37,7 @@ class ModelCheckpoint:
         if os.path.isfile(checkpoint_path):
             checkpoint = torch.load(checkpoint_path, map_location=self.config.device)
             model_checkpoint = checkpoint['model']
+            model_checkpoint = self._strip_ddp_prefix(model_checkpoint)
             if load_only_R:
                 model_dict = model.state_dict()
                 model_checkpoint = {k: v for k, v in model_checkpoint.items()
@@ -56,6 +60,11 @@ class ModelCheckpoint:
             raise FileNotFoundError(f'No checkpoint found at {checkpoint_path}')
 
         return model, [G_opt, D_opt, R_opt], [G_sch, D_sch, R_sch], start_epoch
+
+    # noinspection PyMethodMayBeStatic
+    def _strip_ddp_prefix(self, model_checkpoint):
+        prefix_re = re.compile('(^.*[.])module[.]')
+        return OrderedDict( (prefix_re.sub(r'\1', n), v) for n, v in model_checkpoint.items())
 
 
 class EarlyStopping(object):
