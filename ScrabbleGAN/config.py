@@ -6,28 +6,28 @@ import torch
 class Config:
     # arch[img_h] defines the architecture to be selected
     # imh_h and char_width should be in: 32x16, 64x32, 128x64
-    img_h = 32
-    char_w = 16
+    img_h = 64
+    char_w = 32
     channels = 3
 
     batch_scale = 2
     batch_size = 8 * batch_scale
-    num_epochs = 1000
-    epochs_lr_decay = 100  # learning rate decay will be applied for last these many steps (should be <= num_epochs)
+    num_epochs = 200
+    epochs_lr_decay = 30  # learning rate decay will be applied for last these many steps (should be <= num_epochs)
 
     train_gen_steps = 3  # generator weights to be updated after every specified number of steps
 
     grad_alpha = 2.
 
     grad_balance = True
-    min_grad_scale = 1e-6
+    min_grad_scale = 1e-12
     max_grad_scale = 1.
 
     architecture = 'ScrabbleGAN'
 
     # Generator and Discriminator networks
     bn_linear = 'SN'
-    g_ch = 32
+    g_ch = 64
     g_shared = False
 
     g_lr = 5e-5 * batch_scale

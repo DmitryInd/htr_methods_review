@@ -193,10 +193,14 @@ class Trainer:
         else:
             scale = 1
 
-        self.loss_grad_fake_R = 10 ** 6 * torch.mean(grad_fake_R ** 2)
-        self.loss_grad_fake_adv = 10 ** 6 * torch.mean(grad_fake_adv ** 2)
+        self.loss_grad_fake_R = torch.sqrt(torch.mean(grad_fake_R ** 2))
+        self.loss_grad_fake_adv = torch.sqrt(torch.mean(grad_fake_adv ** 2))
 
-        self.loss_G_total = self.loss_G + self.config.grad_alpha * scale * self.loss_R_fake
+        scale *= self.config.grad_alpha
+        if scale <= 1:
+            self.loss_G_total = self.loss_G + scale * self.loss_R_fake
+        else:
+            self.loss_G_total = (1 / scale) * self.loss_G + self.loss_R_fake
 
     def optimize_D_unlabeled(self):
         """Completes forward, backward, and optimize for D on unlabeled data"""
