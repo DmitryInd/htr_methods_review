@@ -1,30 +1,38 @@
+import os
+
 import torch
 
 
 class Config:
     # arch[img_h] defines the architecture to be selected
     # imh_h and char_width should be in: 32x16, 64x32, 128x64
-    img_h = 32
-    char_w = 16
+    img_h = 64
+    char_w = 32
     channels = 3
 
-    batch_size = 16
-    num_epochs = 60
-    epochs_lr_decay = 100  # learning rate decay will be applied for last these many steps (should be <= num_epochs)
+    batch_scale = 2
+    batch_size = 8 * batch_scale
+    num_epochs = 200
+    epochs_lr_decay = 30  # learning rate decay will be applied for last these many steps (should be <= num_epochs)
 
     train_gen_steps = 3  # generator weights to be updated after every specified number of steps
-    grad_alpha = 1
+
+    grad_alpha = 2.
+
     grad_balance = True
+    min_grad_scale = 1e-12
+    max_grad_scale = 1.
 
     architecture = 'ScrabbleGAN'
 
     # Generator and Discriminator networks
     bn_linear = 'SN'
+    g_ch = 64
     g_shared = False
 
-    g_lr = 2e-4
-    d_lr = 2e-4
-    r_lr = 2e-4
+    g_lr = 5e-5 * batch_scale
+    d_lr = 5e-5 * batch_scale
+    r_lr = 5e-5 * batch_scale
     g_betas = [0., 0.999]
     d_betas = [0., 0.999]
     r_betas = [0., 0.999]
@@ -35,4 +43,8 @@ class Config:
     # Noise vector
     z_dim = 128
 
+    max_grad_norm = 10.
+
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+    worker_count = os.cpu_count() - 1
