@@ -8,13 +8,10 @@ import re
 from dataset_tools import parser, file_handler
 
 
-def get_max_sequence_len(csv_path: str) -> int:
-    max_len = 0
+def get_sequence_statistics(csv_path: str):
     csv_data = pd.read_csv(csv_path, encoding="utf-8")
-    for text in csv_data['text'].to_list():
-        max_len = max(max_len, len(text))
-
-    return max_len
+    text_lens = csv_data['text'].apply(lambda sequence: len(sequence))
+    return text_lens.max(), text_lens.mean()
 
 
 def get_alphabet(csv_path: str, base_alphabet=None):
@@ -110,6 +107,7 @@ if __name__ == '__main__':
         train_validation_test_split(args.path_to_table)
 
     print("Symbols in dataset:\n" + ''.join(get_alphabet(args.path_to_table)))
-    print("Max len of sequence: " + str(get_max_sequence_len(args.path_to_table)))
+    max_sequence_len, mean_sequence_len = get_sequence_statistics(args.path_to_table)
+    print(f"Max len of sequence: {max_sequence_len}, average len of sequence: {mean_sequence_len:.3f}")
 
     print("INFO: Success!")
