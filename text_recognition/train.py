@@ -20,7 +20,7 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def print_plot(loss_history, train_cer_history, valid_cer_history):
     epoch_number = len(loss_history)
     fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
-    ax[0].plot(loss_history, np.arange(epoch_number) + 1, label='train loss')
+    ax[0].plot(np.arange(epoch_number) + 1, loss_history, label='train loss')
     ax[0].set_xlim(left=0)
     ax[0].set_xlabel('Epoch', fontsize=14)
     ax[0].set_title('Train loss', fontsize=14)
