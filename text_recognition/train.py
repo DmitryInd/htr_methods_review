@@ -19,17 +19,19 @@ DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 def print_plot(loss_history, train_cer_history, valid_cer_history):
     epoch_number = len(loss_history)
-    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(12, 8))
+    fig, ax = plt.subplots(nrows=1, ncols=2, figsize=(18, 6))
     ax[0].plot(loss_history, np.arange(epoch_number) + 1, label='train loss')
     ax[0].set_xlim(left=0)
-    ax[0].set_xlabel('Epoch')
-    ax[0].set_title('Train loss')
+    ax[0].set_xlabel('Epoch', fontsize=14)
+    ax[0].set_title('Train loss', fontsize=14)
+    ax[0].grid()
+    ax[0].legend(fontsize=11)
     ax[1].plot(train_cer_history, label='train cer history')
     ax[1].plot(valid_cer_history, label='valid cer history')
-    ax[1].set_xlabel('Epoch')
-    ax[1].set_title('CER')
-    plt.legend()
-    plt.grid()
+    ax[1].set_xlabel('Epoch', fontsize=14)
+    ax[1].set_title('CER', fontsize=14)
+    ax[1].grid()
+    ax[1].legend(fontsize=11)
     plt.show()
 
 
@@ -75,6 +77,11 @@ def main(config):
         model.load_state_dict(states)
         print('Load pretrained model')
     model.to(DEVICE)
+
+    # Log architecture of model
+    pytorch_total_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    print(f"Total number of trainable parameters: {pytorch_total_params}")
+    print(model)
 
     criterion = get_criterion(config.get("criterion")).to(DEVICE)
     optimizer = torch.optim.AdamW(model.parameters(), lr=0.001,
