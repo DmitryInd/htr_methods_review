@@ -1,0 +1,46 @@
+{
+    "alphabet": " ()+/0123456789[]abdefghiklmnoprstu|×ǂабвгдежзийклмнопрстуфхцчшщъыьэюяѣ–⊕⊗",
+    "save_dir": "../data/experiments/Peter's_notes",
+    "model": "CRNN",
+    "criterion": "CTCLoss",
+    "tokenizer": "CTC",
+    "num_epochs": 30,
+    "pretrain_path": "",
+    "image": {
+        "width": 224,
+        "height": 224
+    },
+    "train": {
+        "datasets": [
+            {
+                "csv_path": "../data/Peter's_notes/notes_train.csv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": null,
+        "batch_size": 64
+    },
+    "val": {
+        "datasets": [
+            {
+                "csv_path": "../data/Peter's_notes/notes_validation.csv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": null,
+        "batch_size": 64
+    },
+    "test": {
+        "datasets": [
+            {
+                "csv_path": "../data/Peter's_notes/notes_test.csv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": null,
+        "batch_size": 64
+    }
+}

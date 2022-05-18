@@ -1,12 +1,12 @@
 {
     "alphabet": " ()+/0123456789[]abdefghiklmnoprstu|×ǂабвгдежзийклмнопрстуфхцчшщъыьэюяѣ–⊕⊗",
-    "save_dir": "../data/experiments/test",
+    "save_dir": "../data/experiments/Peter's_notes",
     "model": "ViTSTR",
     "criterion": "CrossEntropy",
     "tokenizer": "Base",
-    "transformer_model": "vitstr_tiny_patch16_224",
+    "transformer_model": "vitstr_base_patch16_224",
     "output_length": 71,
-    "num_epochs": 50,
+    "num_epochs": 30,
     "pretrain_path": "",
     "image": {
         "width": 224,
@@ -21,7 +21,7 @@
 
         ],
         "epoch_size": null,
-        "batch_size": 32
+        "batch_size": 64
     },
     "val": {
         "datasets": [
@@ -32,7 +32,7 @@
 
         ],
         "epoch_size": null,
-        "batch_size": 32
+        "batch_size": 64
     },
     "test": {
         "datasets": [
@@ -43,6 +43,6 @@
 
         ],
         "epoch_size": null,
-        "batch_size": 128
+        "batch_size": 64
     }
 }
