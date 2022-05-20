@@ -47,7 +47,7 @@ def get_relative_path_gen(images_dir_path: str, csv_path: str):
     return get_relative_image_path
 
 
-def csv_format(path_to_file: str, file_extension: str, image_path_column: int, text_column: int, images_dir: str):
+def csv_format(path_to_file: str, file_extension: str, image_path_column: int, text_column: int, images_dir: str, dataset_len: int):
     file_reader = file_handler.get_file_reader(file_extension)
     csv_data = file_reader(path_to_file)
     # Renaming two columns with path to images and recognized text
@@ -58,9 +58,12 @@ def csv_format(path_to_file: str, file_extension: str, image_path_column: int, t
     csv_data = csv_data[['filename', 'text']]
     # Deleting empty rows
     csv_data = csv_data.dropna()
-    # Check path to images
+    # Generating relative path to images
     get_relative_image_path = get_relative_path_gen(images_dir, path_to_file)
     csv_data['filename'] = csv_data['filename'].apply(get_relative_image_path)
+    # Limit size of dataset
+    if dataset_len > 0:
+        csv_data = csv_data.head(dataset_len)
     # Saving fixed dataset in csv format
     path_to_file = file_handler.get_pure_file_name(path_to_file) + ".csv"
     csv_data.to_csv(path_to_file, index=False, encoding="utf-8")
@@ -101,7 +104,7 @@ if __name__ == '__main__':
     file_type = args.file_type if args.file_type is not None else file_handler.get_file_type(args.path_to_table)
     args.path_to_table = csv_format(args.path_to_table, file_type,
                                     args.image_path_column, args.text_column,
-                                    args.images_dir)
+                                    args.images_dir, args.dataset_len)
 
     if args.train_validation_test_split:
         train_validation_test_split(args.path_to_table)

@@ -1,0 +1,51 @@
+{
+    "alphabet": " ()+/0123456789[]abdefghiklmnoprstu|×ǂабвгдежзийклмнопрстуфхцчшщъыьэюяѣ–⊕⊗",
+    "save_dir": "../data/experiments/Peter's_notes",
+    "model": "ViTSTR",
+    "criterion": "CrossEntropy",
+    "tokenizer": "Base",
+    "transformer_model": "vitstr_base_patch16_224",
+    "output_length": 71,
+    "num_epochs": 40,
+    "pretrain_path": "",
+    "image": {
+        "width": 224,
+        "height": 224
+    },
+    "train": {
+        "datasets": [
+            {
+                "csv_path": "../data/Peter's_notes/notes_train.csv",
+                "prob": 1
+            },
+            {
+                "csv_path": "../data/generated_synth/Peter's_notes/train.csv",
+                "prob": 1
+            }
+        ],
+        "epoch_size": 29900,
+        "batch_size": 64
+    },
+    "val": {
+        "datasets": [
+            {
+                "csv_path": "../data/Peter's_notes/notes_validation.csv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": null,
+        "batch_size": 64
+    },
+    "test": {
+        "datasets": [
+            {
+                "csv_path": "../data/Peter's_notes/notes_test.csv",
+                "prob": 1
+            }
+
+        ],
+        "epoch_size": null,
+        "batch_size": 64
+    }
+}
