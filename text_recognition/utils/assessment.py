@@ -40,6 +40,7 @@ def val_loop(data_loader, model, tokenizer, device):
     wer_avg = AverageMeter()
     cer_avg = AverageMeter()
     start_time = time.time()
+    model.eval()
     tqdm_data_loader = tqdm(data_loader, total=len(data_loader), leave=False)
     for images, texts, _, _ in tqdm_data_loader:
         batch_size = len(texts)

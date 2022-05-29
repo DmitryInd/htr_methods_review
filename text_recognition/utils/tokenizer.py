@@ -110,7 +110,7 @@ class BaseTokenizer(Tokenizer):
         texts = []
         for enc_str in text_index:
             text = ''
-            for char_enc in enc_str:
+            for char_enc in enc_str[1:]:
                 # skip space, out of vocabulary and go token, stop if space symbol
                 if char_enc != self.dict[GO] and char_enc != self.dict[OOV_TOKEN] and char_enc != self.dict[SPACE]:
                     text += self.character[char_enc]
