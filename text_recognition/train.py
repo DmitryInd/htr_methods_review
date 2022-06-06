@@ -1,18 +1,19 @@
-import os
-import torch
 import argparse
-import numpy as np
+import os
+
 import matplotlib.pyplot as plt
+import numpy as np
+import torch
+from torch.utils.tensorboard import SummaryWriter
 
-from utils.assessment import val_loop, train_loop
-from utils.weights_controller import FilesLimitControl, load_pretrain_model
-
-from utils.dataset import get_data_loader
-from utils.transforms import get_train_transforms, get_val_transforms
-from utils.config import Config
-from utils.tokenizer import get_tokenizer
-from utils.criteria import get_criterion
 from models.builder import get_model
+from utils.assessment import val_loop, train_loop
+from utils.config import Config
+from utils.criteria import get_criterion
+from utils.dataset import get_data_loader
+from utils.tokenizer import get_tokenizer
+from utils.transforms import get_train_transforms, get_val_transforms
+from utils.weights_controller import FilesLimitControl, load_pretrain_model
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
@@ -98,20 +99,21 @@ def main(config):
     weight_limit_control = FilesLimitControl()
     best_acc = -np.inf
 
-    acc_avg, cer_avg = val_loop(val_loader, model, tokenizer, DEVICE)
     # Collecting statistics
+    writer = SummaryWriter()
+    acc_avg, cer_avg = val_loop(val_loader, model, tokenizer, DEVICE, -1, writer)
     train_loss_history = np.array([])
     train_cer_history = np.array([cer_avg])
     valid_cer_history = np.array([cer_avg])
     for epoch in range(config.get('num_epochs')):
-        print(f'\nEpoch {epoch}')
         fine_tuning = epoch < config.get('num_epochs') * config.get('fine_tuning_part')
         loss_avg, cer_avg = train_loop(train_loader, model, criterion, optimizer,
-                                       scheduler, tokenizer, DEVICE, fine_tuning)
+                                       scheduler, tokenizer, DEVICE,
+                                       epoch, writer, fine_tuning)
         train_loss_history = np.append(train_loss_history, loss_avg)
         train_cer_history = np.append(train_cer_history, cer_avg)
 
-        acc_avg, cer_avg = val_loop(val_loader, model, tokenizer, DEVICE)
+        acc_avg, cer_avg = val_loop(val_loader, model, tokenizer, DEVICE, epoch, writer)
         valid_cer_history = np.append(valid_cer_history, cer_avg)
         if acc_avg >= best_acc:
             best_acc = acc_avg
@@ -121,6 +123,7 @@ def main(config):
             print('Model weights saved')
             weight_limit_control(model_save_path)
 
+    writer.close()
     print_plot(train_loss_history, train_cer_history, valid_cer_history)
 
 

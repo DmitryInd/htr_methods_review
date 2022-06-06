@@ -3,14 +3,17 @@ import math
 import time
 from tqdm import tqdm
 
+from torch.utils.tensorboard import SummaryWriter
 from utils.metrics import get_accuracy, wer, cer
 from utils.predictor import predict, get_text_from_probs
 
 
-def train_loop(data_loader, model, criterion, optimizer, scheduler, tokenizer, device, fine_tuning: bool = True):
+def train_loop(data_loader, model, criterion, optimizer, scheduler, tokenizer, device,
+               epoch: int, writer: SummaryWriter, fine_tuning: bool = True):
     torch.cuda.empty_cache()
     loss_avg = AverageMeter()
     cer_avg = AverageMeter()
+    grad_norm_avg = AverageMeter()
     start_time = time.time()
     model.train()
     tqdm_data_loader = tqdm(data_loader, total=len(data_loader), leave=False)
@@ -24,18 +27,25 @@ def train_loop(data_loader, model, criterion, optimizer, scheduler, tokenizer, d
         loss_avg.update(loss.item(), batch_size)
         cer_avg.update(cer(texts, get_text_from_probs(output, tokenizer)), batch_size)
         loss.backward()
-        torch.nn.utils.clip_grad_norm_(model.parameters(), 2)
+        grad_norm_avg.update(torch.nn.utils.clip_grad_norm_(model.parameters(), 2))
         optimizer.step()
         scheduler.step()
     loop_time = sec2min(time.time() - start_time)
+
+    # Saving statistics
+    lr = 0
     for param_group in optimizer.param_groups:
         lr = param_group['lr']
-    print(f'\nTrain\tLoss: {loss_avg.avg:.5f}, cer: {cer_avg.avg:.4f}, '
+    writer.add_scalar('Grad/train', grad_norm_avg.avg, epoch)
+    writer.add_scalar('Loss/train', loss_avg.avg, epoch)
+    writer.add_scalar('CER/train', cer_avg.avg, epoch)
+    writer.add_scalar('LR/train', lr, epoch)
+    print(f'\nEpoch {epoch}, Loss: {loss_avg.avg:.5f}, cer: {cer_avg.avg:.4f}, '
           f'LR: {lr:.7f}, loop_time: {loop_time}')
     return loss_avg.avg, cer_avg.avg
 
 
-def val_loop(data_loader, model, tokenizer, device):
+def val_loop(data_loader, model, tokenizer, device, epoch: int = 0, writer: SummaryWriter = None):
     acc_avg = AverageMeter()
     wer_avg = AverageMeter()
     cer_avg = AverageMeter()
@@ -50,6 +60,12 @@ def val_loop(data_loader, model, tokenizer, device):
         cer_avg.update(cer(texts, text_preds), batch_size)
 
     loop_time = sec2min(time.time() - start_time)
+
+    # Saving statistics
+    if writer is not None:
+        writer.add_scalar('Accuracy/test', acc_avg.avg, epoch)
+        writer.add_scalar('WER/test', wer_avg.avg, epoch)
+        writer.add_scalar('CER/test', cer_avg.avg, epoch)
     print(f'\nValidation\t'
           f'acc: {acc_avg.avg:.4f}, '
           f'wer: {wer_avg.avg:.4f}, '
