@@ -104,8 +104,10 @@ def main(config):
     train_cer_history = np.array([cer_avg])
     valid_cer_history = np.array([cer_avg])
     for epoch in range(config.get('num_epochs')):
+        print(f'\nEpoch {epoch}')
+        fine_tuning = epoch < config.get('num_epochs') * config.get('fine_tuning_part')
         loss_avg, cer_avg = train_loop(train_loader, model, criterion, optimizer,
-                                       epoch, scheduler, tokenizer, DEVICE)
+                                       scheduler, tokenizer, DEVICE, fine_tuning)
         train_loss_history = np.append(train_loss_history, loss_avg)
         train_cer_history = np.append(train_cer_history, cer_avg)
 

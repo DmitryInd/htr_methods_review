@@ -1,3 +1,4 @@
+import torch
 import torch.nn as nn
 import torchvision
 
@@ -39,13 +40,18 @@ class CRNN(nn.Module):
             nn.Linear(time_feature_count, number_class_symbols)
         )
 
-    def forward(self, x):
+    def forward(self, x, fine_tuning: bool = False):
         """
         Calculate model output
+        :param fine_tuning: Either don't calculate gradients for pretrained part or not
         :param x: batch of images, size of input - [batch, channel, height, width]
         :return: predictions, size of output - [batch, seq_len, num_classes (alphabet_size)]
         """
-        x = self.feature_extractor(x)
+        if fine_tuning:
+            with torch.no_grad():
+                x = self.feature_extractor(x)
+        else:
+            x = self.feature_extractor(x)
         b, c, h, w = x.size()
         x = x.view(b, c * h, w)
         x = self.avg_pool(x)

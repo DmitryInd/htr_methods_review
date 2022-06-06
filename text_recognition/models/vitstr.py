@@ -70,13 +70,18 @@ class ViTSTR(VisionTransformer):
         x = self.norm(x)
         return x
 
-    def forward(self, x):
+    def forward(self, x, fine_tuning: bool = False):
         """
         Calculate model output
+        :param fine_tuning: Either don't calculate gradients for pretrained part or not
         :param x: batch of images, size of input - [batch, channel, height, width]
         :return: predictions, size of output - [batch, sequence length, num_classes (alphabet_size)]
         """
-        x = self.forward_features(x)
+        if fine_tuning:
+            with torch.no_grad():
+                x = self.forward_features(x)
+        else:
+            x = self.forward_features(x)
         x = x[:, :self.output_length]
         # batch, sequence length, embedding size
         b, s, e = x.size()

@@ -6,7 +6,8 @@
     "tokenizer": "Base",
     "transformer_model": "vitstr_base_patch16_224",
     "output_length": 70,
-    "num_epochs": 25,
+    "num_epochs": 30,
+    "fine_tuning_part": 0.2,
     "pretrain_path": "",
     "image": {
         "width": 224,

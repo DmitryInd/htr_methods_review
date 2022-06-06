@@ -7,7 +7,7 @@ from utils.metrics import get_accuracy, wer, cer
 from utils.predictor import predict, get_text_from_probs
 
 
-def train_loop(data_loader, model, criterion, optimizer, epoch, scheduler, tokenizer, device):
+def train_loop(data_loader, model, criterion, optimizer, scheduler, tokenizer, device, fine_tuning: bool = True):
     torch.cuda.empty_cache()
     loss_avg = AverageMeter()
     cer_avg = AverageMeter()
@@ -19,7 +19,7 @@ def train_loop(data_loader, model, criterion, optimizer, epoch, scheduler, token
         images = images.to(device)
         enc_pad_texts = enc_pad_texts.to(device)
         batch_size = len(texts)
-        output = model(images)
+        output = model(images, fine_tuning)
         loss = criterion(output, enc_pad_texts, text_lens)
         loss_avg.update(loss.item(), batch_size)
         cer_avg.update(cer(texts, get_text_from_probs(output, tokenizer)), batch_size)
@@ -30,7 +30,7 @@ def train_loop(data_loader, model, criterion, optimizer, epoch, scheduler, token
     loop_time = sec2min(time.time() - start_time)
     for param_group in optimizer.param_groups:
         lr = param_group['lr']
-    print(f'\nEpoch {epoch}, Loss: {loss_avg.avg:.5f}, cer: {cer_avg.avg:.4f}, '
+    print(f'\nTrain\tLoss: {loss_avg.avg:.5f}, cer: {cer_avg.avg:.4f}, '
           f'LR: {lr:.7f}, loop_time: {loop_time}')
     return loss_avg.avg, cer_avg.avg
 
@@ -66,6 +66,7 @@ def sec2min(s):
 
 class AverageMeter:
     """Computes and stores the average and current value"""
+
     def __init__(self):
         self.reset()
 

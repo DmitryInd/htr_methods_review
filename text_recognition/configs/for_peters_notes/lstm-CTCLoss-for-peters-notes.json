@@ -5,6 +5,7 @@
     "criterion": "CTCLoss",
     "tokenizer": "CTC",
     "num_epochs": 30,
+    "fine_tuning_part": 0.2,
     "pretrain_path": "",
     "image": {
         "width": 224,
