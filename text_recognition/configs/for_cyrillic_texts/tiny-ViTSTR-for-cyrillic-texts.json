@@ -5,10 +5,10 @@
     "criterion": "CrossEntropy",
     "tokenizer": "Base",
     "transformer_model": "vitstr_tiny_patch16_224",
-    "output_length": 40,
+    "output_length": 30,
     "num_epochs": 30,
-    "fine_tuning_part": 0.11,
-    "pretrain_path": "",
+    "fine_tuning_part": 0,
+    "pretrain_path": "../data/experiments/cyrillic_texts/tiny-ViTSTR-fine-tuned.ckpt",
     "image": {
         "width": 224,
         "height": 224
