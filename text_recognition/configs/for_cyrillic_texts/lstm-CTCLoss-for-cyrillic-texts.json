@@ -6,7 +6,7 @@
     "tokenizer": "CTC",
     "num_epochs": 30,
     "fine_tuning_part": 0,
-    "pretrain_path": "",
+    "pretrain_path": "../data/experiments/cyrillic_texts/lstm-CTCLoss-fine-tuned.ckpt",
     "image": {
         "width": 224,
         "height": 224

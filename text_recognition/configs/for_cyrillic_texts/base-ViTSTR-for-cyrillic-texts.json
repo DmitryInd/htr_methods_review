@@ -7,8 +7,8 @@
     "transformer_model": "vitstr_base_patch16_224",
     "output_length": 30,
     "num_epochs": 30,
-    "fine_tuning_part": 0,
-    "pretrain_path": "",
+    "fine_tuning_part": 0,  
+    "pretrain_path": "../data/experiments/cyrillic_texts/base-ViTSTR-fine-tuned.ckpt",
     "image": {
         "width": 224,
         "height": 224
