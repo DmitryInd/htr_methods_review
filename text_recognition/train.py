@@ -1,6 +1,7 @@
 import argparse
 import os
-
+import random
+ 
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
@@ -16,6 +17,14 @@ from utils.transforms import get_train_transforms, get_val_transforms
 from utils.weights_controller import FilesLimitControl, load_pretrain_model
 
 DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+
+def init_seed(seed):
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed(seed)
+    np.random.seed(seed)
+    random.seed(seed)
 
 
 def print_plot(loss_history, train_cer_history, valid_cer_history):
@@ -68,6 +77,7 @@ def get_loaders(tokenizer, config):
 
 
 def main(config):
+    init_seed(42)
     tokenizer = get_tokenizer(config.get('tokenizer'), config)
     os.makedirs(config.get('save_dir'), exist_ok=True)
     train_loader, val_loader = get_loaders(tokenizer, config)

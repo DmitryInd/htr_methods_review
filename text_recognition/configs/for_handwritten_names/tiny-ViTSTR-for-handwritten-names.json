@@ -1,11 +1,11 @@
 {
-    "alphabet": " !\"'()*+,-./0123456789:;<=>?ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]_|}’№",
+    "alphabet": " '-ABCDEFGHIJKLMNOPQRSTUVWXYZ`abcdefghilmnoprstuvyz",
     "save_dir": "../data/experiments/handwritten_names",
     "model": "ViTSTR",
     "criterion": "CrossEntropy",
     "tokenizer": "Base",
     "transformer_model": "vitstr_tiny_patch16_224",
-    "output_length": 30,
+    "output_length": 40,
     "num_epochs": 30,
     "fine_tuning_part": 0,
     "pretrain_path": "",
