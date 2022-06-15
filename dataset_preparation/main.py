@@ -63,7 +63,7 @@ def csv_format(path_to_file: str, file_extension: str, image_path_column: int, t
     csv_data['filename'] = csv_data['filename'].apply(get_relative_image_path)
     # Limit size of dataset
     if dataset_len > 0:
-        csv_data = csv_data.head(dataset_len)
+        csv_data = csv_data.sample(n=dataset_len, random_state=42)
     # Saving fixed dataset in csv format
     path_to_file = file_handler.get_pure_file_name(path_to_file) + ".csv"
     csv_data.to_csv(path_to_file, index=False, encoding="utf-8")
